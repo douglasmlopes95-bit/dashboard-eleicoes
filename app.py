@@ -38,7 +38,7 @@ def add_deputado(nome, tipo):
 
 def get_deputados(tipo=None):
     if tipo:
-        return pd.read_sql(f"SELECT * FROM deputados WHERE tipo = ?", conn, params=(tipo,))
+        return pd.read_sql("SELECT * FROM deputados WHERE tipo = ?", conn, params=(tipo,))
     return pd.read_sql("SELECT * FROM deputados", conn)
 
 def update_deputado(dep_id, nome, tipo):
@@ -118,12 +118,12 @@ if menu == "Cadastrar Deputados":
             if atualizar:
                 update_deputado(dep_id, novo_nome, novo_tipo)
                 st.success("✅ Deputado atualizado!")
-                st.experimental_rerun()
+                st.rerun()
 
         if st.button("🗑️ Excluir Deputado"):
             delete_deputado(dep_id)
             st.warning("🚨 Deputado excluído!")
-            st.experimental_rerun()
+            st.rerun()
 
 # ======================
 # Cadastro e edição de Membros
@@ -143,16 +143,12 @@ elif menu == "Cadastrar Membros":
         cargo = st.text_input("Cargo")
         percentual = st.number_input("% de votos (ex.: 40 para 40%)", min_value=0.0, step=0.1, format="%.2f")
 
-        if fed_options:
-            dep_fed_sel = st.selectbox("Deputado Federal", fed_options)
-        else:
-            dep_fed_sel = None
-            st.info("Nenhum deputado federal cadastrado. Cadastre um em 'Cadastrar Deputados'.")
+        dep_fed_sel = st.selectbox("Deputado Federal", fed_options) if fed_options else None
+        dep_est_sel = st.selectbox("Deputado Estadual", est_options) if est_options else None
 
-        if est_options:
-            dep_est_sel = st.selectbox("Deputado Estadual", est_options)
-        else:
-            dep_est_sel = None
+        if not fed_options:
+            st.info("Nenhum deputado federal cadastrado. Cadastre um em 'Cadastrar Deputados'.")
+        if not est_options:
             st.info("Nenhum deputado estadual cadastrado. Cadastre um em 'Cadastrar Deputados'.")
 
         salvar = st.form_submit_button("Salvar Membro")
@@ -205,12 +201,12 @@ elif menu == "Cadastrar Membros":
                 dep_est_id = deputados_est_df.loc[deputados_est_df["nome"] == dep_est, "id"].values[0]
                 update_membro(mem_id, novo_nome, novos_votos, novo_cargo, novo_percentual, dep_fed_id, dep_est_id)
                 st.success("✅ Membro atualizado!")
-                st.experimental_rerun()
+                st.rerun()
 
         if st.button("🗑️ Excluir Membro"):
             delete_membro(mem_id)
             st.warning("🚨 Membro excluído!")
-            st.experimental_rerun()
+            st.rerun()
 
 # ======================
 # Dashboard
