@@ -1,4 +1,3 @@
-streamlit
-pandas
-plotly
-sqlite3   # nativo, pode ser ignorado
+streamlit==1.26.0
+pandas==2.1.0
+plotly==5.16.1
